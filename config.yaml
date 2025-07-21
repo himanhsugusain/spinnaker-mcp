@@ -1,0 +1,6 @@
+gate:
+  endpoint: https://gate-endpoint
+
+auth:
+  oauthClientId: oauth-clientID
+  serviceAccountKeyPath: "path/to/service-key.json"
