@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"strconv"
 
-	server "github.com/himanhsugusain/go-mcp"
 	"config"
+	server "github.com/himanhsugusain/go-mcp"
 	"go.uber.org/zap"
 
 	"golang.org/x/oauth2"
@@ -20,7 +20,7 @@ import (
 
 type Spinnaker struct {
 	client *ClientWithResponses
-	log *zap.Logger
+	log    *zap.Logger
 }
 
 func NewSpinnakerClient(ctx context.Context, log *zap.Logger) (*Spinnaker, error) {
@@ -37,7 +37,7 @@ func NewSpinnakerClient(ctx context.Context, log *zap.Logger) (*Spinnaker, error
 	client, err := NewClientWithResponses("", WithHTTPClient(httpClient), WithBaseURL(cfg.Gate.Endpoint))
 	return &Spinnaker{
 		client: client,
-		log: log,
+		log:    log,
 	}, err
 }
 
@@ -53,8 +53,8 @@ func (s *Spinnaker) GetCapabilities() server.Capabilities {
 
 func (s *Spinnaker) ServerInfo() server.ServerInfo {
 	return server.ServerInfo{
-		Name: "Spinnaker-mcp-server",
-		Title: "spinnaker-mcp",
+		Name:    "Spinnaker-mcp-server",
+		Title:   "spinnaker-mcp",
 		Version: "0.0.1",
 	}
 }
@@ -87,8 +87,8 @@ func (s *Spinnaker) ListTools() server.ListToolResponse {
 				},
 			},
 			{
-				Name: "getPipeline",
-				Title: "Retrieve pipeline executions",
+				Name:        "getPipeline",
+				Title:       "Retrieve pipeline executions",
 				Description: "Get execution for a pipeline based on pipelineconfigId and limit",
 				InputSchema: map[string]any{
 					"type": "object",
@@ -110,8 +110,7 @@ func (s *Spinnaker) ListTools() server.ListToolResponse {
 	}
 }
 
-
-func getPtr[U any](x U) *U{
+func getPtr[U any](x U) *U {
 	p := x
 	return &p
 }
@@ -134,23 +133,23 @@ func (s *Spinnaker) ToolsCall(call *jsonrpc2.Call) map[string]any {
 			if err != nil {
 				return server.ToolsErrorText(err)
 			}
-			return  server.ToolsResponseText(string(resp.Body))
+			return server.ToolsResponseText(string(resp.Body))
 		}
 	case "getPipeline":
-		{	
+		{
 			s.log.Debug("input", zap.Any("params", params))
-			limit , err := strconv.ParseInt(params.Arguments["limit"], 10, 32)
+			limit, err := strconv.ParseInt(params.Arguments["limit"], 10, 32)
 			if err != nil {
 				return server.ToolsErrorText(err)
 			}
 			resp, err := s.client.GetLatestExecutionsByConfigIdsWithResponse(context.Background(), &GetLatestExecutionsByConfigIdsParams{
 				PipelineConfigIds: getPtr(params.Arguments["pipelineConfigId"]),
-				Limit: getPtr(int32(limit)),
+				Limit:             getPtr(int32(limit)),
 			})
 			if err != nil {
 				return server.ToolsErrorText(err)
 			}
-			return  server.ToolsResponseText(string(resp.Body))
+			return server.ToolsResponseText(string(resp.Body))
 		}
 	default:
 		return server.ToolsErrorText(fmt.Errorf("tools call not found"))

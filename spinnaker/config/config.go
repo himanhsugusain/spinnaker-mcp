@@ -3,8 +3,8 @@ package config
 
 import (
 	"context"
-	"os"
 	"gopkg.in/yaml.v3"
+	"os"
 )
 
 type AuthConfig struct {
@@ -13,15 +13,14 @@ type AuthConfig struct {
 }
 
 type Gate struct {
-		Endpoint string `json:"endpoint" yaml:"endpoint"`
-		RetryTimeout int `json:"retryTimeout,omitempty" yaml:"retryTimeout,omitempty"`
+	Endpoint     string `json:"endpoint" yaml:"endpoint"`
+	RetryTimeout int    `json:"retryTimeout,omitempty" yaml:"retryTimeout,omitempty"`
 }
 
-type Config struct{
-	Gate *Gate `json:"gate" yaml:"gate"`
+type Config struct {
+	Gate *Gate       `json:"gate" yaml:"gate"`
 	Auth *AuthConfig `json:"auth" yaml:"auth"`
 }
-
 
 func NewConfig(ctx context.Context) (*Config, error) {
 	cfg := Config{}
@@ -30,6 +29,5 @@ func NewConfig(ctx context.Context) (*Config, error) {
 		return nil, err
 	}
 	err = yaml.Unmarshal(data, &cfg)
-	return &cfg,err
+	return &cfg, err
 }
-
